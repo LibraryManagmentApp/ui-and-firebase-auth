@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/category.dart';
-import '../widget/card_scroll_view.dart';
+import '../../core/models/category.dart';
+import '../widgets/card_scroll_view.dart';
 
 class CategoryPage extends StatefulWidget {
   @override
@@ -11,7 +11,7 @@ var cardAspectRatio = 12.0 / 16.0;
 var widgetAspectRadio = cardAspectRatio * 1.2;
 
 class _CategoryPageState extends State<CategoryPage> {
-  var currentPage = images.length - 1.0;
+  double? currentPage = images.length - 1.0;
 
   @override
   Widget build(BuildContext context) {

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import '../models/constant.dart';
-import 'package:flutter/services.dart';
-import '../provider/auth.dart';
+import '../../core/models/http_exception.dart';
+import '../../core/view_model/provider/auth.dart';
+import '../../utils/constant.dart';
 import 'package:provider/provider.dart';
-import '../models/http_exception.dart';
 
 class AuthScreen extends StatelessWidget {
-  static const routname='/auth';
+  static const routname = '/auth';
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize=MediaQuery.of(context).size;
+    final deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
         children: [
@@ -49,20 +48,25 @@ class AuthScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children:const [
-                      Text("IQRA  ",
-                        style: TextStyle(fontSize:40,
+                    children: const [
+                      Text(
+                        "IQRA  ",
+                        style: TextStyle(
+                          fontSize: 40,
                           fontWeight: FontWeight.bold,
                           fontFamily: "Pacifico",
-                          color:firstColor,
-
-                        ),),
-                      Text("Library",
-                        style: TextStyle(fontSize:40,
+                          color: firstColor,
+                        ),
+                      ),
+                      Text(
+                        "Library",
+                        style: TextStyle(
+                          fontSize: 40,
                           fontWeight: FontWeight.bold,
                           fontFamily: "Pacifico",
-                          color:secondaryColor,
-                        ),)
+                          color: secondaryColor,
+                        ),
+                      )
                     ],
                   ),
                   const SizedBox(
@@ -70,7 +74,7 @@ class AuthScreen extends StatelessWidget {
                   ),
                   Flexible(
                     flex: deviceSize.width > 600 ? 2 : 1,
-                    child:  AuthCard(),
+                    child: AuthCard(),
                   ),
                 ],
               ),
@@ -82,44 +86,45 @@ class AuthScreen extends StatelessWidget {
   }
 }
 
-class AuthCard extends StatefulWidget{
+class AuthCard extends StatefulWidget {
   @override
-  _AuthcardState createState()=> _AuthcardState();
+  _AuthcardState createState() => _AuthcardState();
 }
 
-enum AuthMode{
-  Login,SignUp
-}
+enum AuthMode { Login, SignUp }
 
-class _AuthcardState extends State <AuthCard> with SingleTickerProviderStateMixin{
-
+class _AuthcardState extends State<AuthCard>
+    with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formkey = GlobalKey();
-  AuthMode _authmode= AuthMode.Login;
-  Map<String,String> _authData={
-    'email':'',
-    'password':'',
+  AuthMode _authmode = AuthMode.Login;
+  Map<String, String?> _authData = {
+    'email': '',
+    'password': '',
   };
-  var _isLoading =false;
-  final _passwordController= TextEditingController();
-  AnimationController _controller;
-  Animation<Offset> _slidAnimation;
-  Animation<double> _opacityAnimation;
+  var _isLoading = false;
+  final _passwordController = TextEditingController();
+  late AnimationController _controller;
+  late Animation<Offset> _slidAnimation;
+  late Animation<double> _opacityAnimation;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
 
-    _controller= AnimationController(vsync: this,duration: Duration(milliseconds: 300),);
-    _slidAnimation= Tween <Offset>(
-      begin:Offset(0,-0.15),
-      end: Offset(0,0),
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300),
+    );
+    _slidAnimation = Tween<Offset>(
+      begin: Offset(0, -0.15),
+      end: Offset(0, 0),
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.fastOutSlowIn,
     ));
-    _opacityAnimation=Tween <double>(
-      begin:0.0,
-      end:1.0,
+    _opacityAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
     ).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.easeIn,
@@ -127,34 +132,34 @@ class _AuthcardState extends State <AuthCard> with SingleTickerProviderStateMixi
   }
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
     _controller.dispose();
   }
 
   Future<void> _submit() async {
-    if (!_formkey.currentState.validate()) {
+    if (!_formkey.currentState!.validate()) {
       return;
     }
     FocusScope.of(context).unfocus();
-    _formkey.currentState.save();
+    _formkey.currentState!.save();
     setState(() {
       _isLoading = true;
     });
     try {
       if (_authmode == AuthMode.Login) {
-        await Provider.of<Auth>(context, listen: false).logIn(
-            _authData['email'], _authData['password']);
+        await Provider.of<Auth>(context, listen: false)
+            .logIn(_authData['email'], _authData['password']);
       } else {
-        await Provider.of<Auth>(context, listen: false).signUp(
-            _authData['email'], _authData['password']);
+        await Provider.of<Auth>(context, listen: false)
+            .signUp(_authData['email'], _authData['password']);
       }
     } on HttpException catch (error) {
       var errorMessage = 'Authentication Failed';
       if (error.toString().contains('EMAIL_EXISTS')) {
-        errorMessage = "This email adress is already in use";
+        errorMessage = "This email address is already in use";
       } else if (error.toString().contains('INVALID_EMAIL')) {
-        errorMessage = "This is not a valid email adress";
+        errorMessage = "This is not a valid email address";
       } else if (error.toString().contains('WEAK_PASSWORD')) {
         errorMessage = "This password is too weak";
       } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
@@ -163,8 +168,7 @@ class _AuthcardState extends State <AuthCard> with SingleTickerProviderStateMixi
         errorMessage = "Invalid password";
       }
       _showErrorDialog(errorMessage);
-    }
-    catch (error) {
+    } catch (error) {
       const errorMessage =
           'Could not authenticate you. please try again later.';
       _showErrorDialog(errorMessage);
@@ -178,15 +182,21 @@ class _AuthcardState extends State <AuthCard> with SingleTickerProviderStateMixi
     showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
-          title: const Text('An Error Occurred!!',style:TextStyle(color: secondaryColor),),
-          content: Text(message),
-          actions: [
-            TextButton(
-              child: const Text('Okay!!',style:TextStyle(color:firstColor),),
-              onPressed: () => Navigator.of(ctx).pop(),
-            )
-          ],
-        ));
+              title: const Text(
+                'An Error Occurred!!',
+                style: TextStyle(color: secondaryColor),
+              ),
+              content: Text(message),
+              actions: [
+                TextButton(
+                  child: const Text(
+                    'Okay!!',
+                    style: TextStyle(color: firstColor),
+                  ),
+                  onPressed: () => Navigator.of(ctx).pop(),
+                )
+              ],
+            ));
   }
 
   void _switchAuthMode() {
@@ -202,12 +212,13 @@ class _AuthcardState extends State <AuthCard> with SingleTickerProviderStateMixi
       _controller.reverse();
     }
   }
+
   bool passvisi = true;
   bool passvisibilitye = true;
 
   @override
   Widget build(BuildContext context) {
-    final deviceSize=MediaQuery.of(context).size;
+    final deviceSize = MediaQuery.of(context).size;
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -218,7 +229,7 @@ class _AuthcardState extends State <AuthCard> with SingleTickerProviderStateMixi
         curve: Curves.easeIn,
         height: _authmode == AuthMode.SignUp ? 320 : 260,
         constraints:
-        BoxConstraints(minHeight: _authmode == AuthMode.SignUp ? 320 : 260),
+            BoxConstraints(minHeight: _authmode == AuthMode.SignUp ? 320 : 260),
         width: deviceSize.width * 0.75,
         padding: const EdgeInsets.all(16),
         child: Form(
@@ -231,12 +242,12 @@ class _AuthcardState extends State <AuthCard> with SingleTickerProviderStateMixi
                     labelText: 'Email',
                     suffixIcon: Icon(
                       Icons.alternate_email,
-                      color:secondaryColor,
+                      color: secondaryColor,
                     ),
                   ),
                   keyboardType: TextInputType.emailAddress,
                   validator: (val) {
-                    if (val.isEmpty || !val.contains('@')) {
+                    if (val!.isEmpty || !val.contains('@')) {
                       return 'Invalid email..';
                     }
                     return null;
@@ -247,22 +258,21 @@ class _AuthcardState extends State <AuthCard> with SingleTickerProviderStateMixi
                 ),
                 TextFormField(
                   obscureText: passvisi,
-                  decoration:  InputDecoration(
-                  labelText: 'Password',
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                        passvisi ? Icons.visibility : Icons.visibility_off),
-                    onPressed: () {
-                      setState(() {
-                        passvisi = !passvisi;
-                      });
-                    },
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                          passvisi ? Icons.visibility : Icons.visibility_off),
+                      onPressed: () {
+                        setState(() {
+                          passvisi = !passvisi;
+                        });
+                      },
+                    ),
                   ),
-                ),
-                  //obscureText: true,
                   controller: _passwordController,
                   validator: (val) {
-                    if (val.isEmpty || val.length < 5) {
+                    if (val!.isEmpty || val.length < 5) {
                       return 'Password is too Short!!..';
                     }
                     return null;
@@ -298,14 +308,13 @@ class _AuthcardState extends State <AuthCard> with SingleTickerProviderStateMixi
                             },
                           ),
                         ),
-
                         validator: _authmode == AuthMode.SignUp
                             ? (val) {
-                          if (val != _passwordController.text) {
-                            return 'Password Do Not Match!..';
-                          }
-                          return null;
-                        }
+                                if (val != _passwordController.text) {
+                                  return 'Password Do Not Match!..';
+                                }
+                                return null;
+                              }
                             : null,
                       ),
                     ),
@@ -314,15 +323,17 @@ class _AuthcardState extends State <AuthCard> with SingleTickerProviderStateMixi
                 const SizedBox(height: 20),
                 if (_isLoading) const CircularProgressIndicator(),
                 RaisedButton(
-                  child: Text(_authmode == AuthMode.Login ? 'LOGIN' : 'SIGNUP',
+                  child: Text(
+                    _authmode == AuthMode.Login ? 'LOGIN' : 'SIGNUP',
                     // style: TextStyle(color:secondaryColor ),
                   ),
                   onPressed: _submit,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30)),
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                  color:firstColor,
-                  textColor: Theme.of(context).primaryTextTheme.headline6.color,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                  color: firstColor,
+                  textColor: Theme.of(context).primaryTextTheme.headline6!.color,
                 ),
                 const SizedBox(height: 10),
                 TextButton(
@@ -345,6 +356,4 @@ class _AuthcardState extends State <AuthCard> with SingleTickerProviderStateMixi
       ),
     );
   }
-
 }
-

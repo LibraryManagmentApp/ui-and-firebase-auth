@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../constant.dart';
-import '../provider/auth.dart';
-import '../provider/cart.dart';
-import '../screens/cart_screen.dart';
-import '../widget/app_drawer.dart';
+import 'package:two2/ui/views/category_page.dart';
+import 'package:two2/ui/widgets/top.dart';
+import '../../core/view_model/provider/cart.dart';
+import '../../utils/constant.dart';
 import 'package:provider/provider.dart';
+import '../widgets/app_drawer.dart';
+import '../widgets/badge.dart';
 import './cart_screen.dart';
-import '../screens/cart_screen.dart';
-import '../provider/order.dart';
-import '../screens/order_screen.dart';
-import '../screens/category_page.dart';
-import '../widget/badge.dart';
-import '../widget/top.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -22,7 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
 
-  TabController _tabController;
+  TabController? _tabController;
 
   @override
   void initState() {
@@ -33,7 +28,7 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       drawer:appdrawer(),
-      backgroundColor: Colors.white,
+      backgroundColor: thirdColor,
       body: AnnotatedRegion(
         value: SystemUiOverlayStyle,
         child:
@@ -48,7 +43,8 @@ class _HomePageState extends State<HomePage>
                     IconButton(
                       onPressed: () {
                         setState(() {
-                          appdrawer.routename;
+                          //appdrawer.routename;
+                          //Navigator.of(context).pushNamed('/appdrawer');
                         });
                       },
                     //Navigator.of(context).pushNamed(appdrawer.routename),
@@ -73,10 +69,10 @@ class _HomePageState extends State<HomePage>
                           color:firstColor,
                         ),
                         onPressed: () =>
-                            Navigator.of(context).pushNamed(cartscreen.routename),
+                            Navigator.of(context).pushNamed(cartScreen.routeName),
                       ),
-                      builder: (_, cart, ch) =>
-                          badge(value: cart.itemcount.toString(), child: ch),
+                      builder: (context, cart, child) =>
+                          badge(value: cart.itemcount.toString(), child: child),
                     ),
                   ],
                 ),

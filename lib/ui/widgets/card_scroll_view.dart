@@ -1,8 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import '../models/category.dart';
-import '../screens/category_page.dart';
-
+import 'package:two2/ui/views/category_page.dart';
+import '../../core/models/category.dart';
 // ignore: must_be_immutable
 class CardScrollView extends StatefulWidget {
 
@@ -38,8 +37,7 @@ class _CardScrollViewState extends State<CardScrollView> {
             var primaryCardLeft = safeWidth - widthOfPrimaryCard;
             var horizontalInset = primaryCardLeft / 2;
 
-            // ignore: deprecated_member_use
-            List<Widget> cardList = new List();
+            List<Widget> cardList = [];
 
             for(var i = 0;i < images.length; i++){
               var delta = i - widget.currentPage;

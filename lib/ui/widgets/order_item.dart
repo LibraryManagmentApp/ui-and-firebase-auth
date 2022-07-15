@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../provider/order.dart' as ord;
+import '../../core/view_model/provider/order.dart' as ord;
 
 class orderitem extends StatelessWidget {
-  final ord.orderitem order;
+  final ord.orderItem order;
 
-  const orderitem(this.order);
+  orderitem(this.order);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class orderitem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              prod.product_name,
+              prod.product_name!,
               style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold

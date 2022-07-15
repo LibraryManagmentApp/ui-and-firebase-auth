@@ -1,8 +1,8 @@
+//import '../../core/ui/views/order_screen.dart' as orderscreen;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../constant.dart';
-import '../provider/auth.dart';
-import '../screens/order_screen.dart';
+import '../../core/view_model/provider/auth.dart';
+import '../../utils/constant.dart';
 
 class appdrawer extends StatelessWidget {
   static const routename = '/appdrawer';
@@ -39,7 +39,7 @@ class appdrawer extends StatelessWidget {
               leading: Icon(Icons.work_rounded,color: secondaryColor),
               title: Text('ORDERS',style: TextStyle(color:secondaryColor,fontWeight:FontWeight.bold),),
               onTap: () => Navigator.of(context)
-                  .pushReplacementNamed(orderscreen.routename),
+                  .pushReplacementNamed('/cartScreen'),
             ),
             Divider(),
             ListTile(
@@ -56,7 +56,6 @@ class appdrawer extends StatelessWidget {
                   Navigator.of(context).pushReplacementNamed('/');
                   Provider.of<Auth>(context, listen: false).logOut();
                 }),
-
           ],
         ),
       ),

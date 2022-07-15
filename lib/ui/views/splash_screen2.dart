@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:easy_splash_screen/easy_splash_screen.dart';
-import '../constant.dart';
-import '../screens/auth_screen.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:two2/ui/views/auth_screen.dart';
+import '../../utils/constant.dart';
 
 class mainsplashscreen extends StatelessWidget {
   @override
@@ -17,7 +17,7 @@ class mainsplashscreen extends StatelessWidget {
             EasySplashScreen(
               logo: Image.asset("assets/images/logo2.png"),
               durationInSeconds: 4,
-              showLoader:false,
+              showLoader: false,
               loadingText: const Text("loading...",
                   style: TextStyle(
                       color: secondaryColor,
@@ -34,10 +34,10 @@ class mainsplashscreen extends StatelessWidget {
                     height: 620,
                   ),
                   Center(
-                    child:SpinKitPumpingHeart(
+                    child: SpinKitPumpingHeart(
                       color: firstColor,
                       size: 40,
-                      duration: Duration(seconds:2),
+                      duration: Duration(seconds: 2),
                     ),
                   ),
                 ],

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../provider/cart.dart' show cart;
-import '../widget/cart_item.dart';
-import '../provider/order.dart';
+import '../../core/view_model/provider/cart.dart';
+import '../../core/view_model/provider/order.dart';
+import '../widgets/cart_item.dart' show CartItem;
 
-class cartscreen extends StatelessWidget {
-  static const routename = '/cart';
+class cartScreen extends StatelessWidget {
+
+  static const routeName = '/cartScreen';
+  
   @override
   Widget build(BuildContext context) {
     final card = Provider.of<cart>(context);
@@ -30,11 +32,11 @@ class cartscreen extends StatelessWidget {
                     Spacer(), //المساحة الممكنة
                     Chip(
                       label: Text(
-                        '\$${card.totalamount.toStringAsFixed(2)}',
+                        '\$${card.totalAmount.toStringAsFixed(2)}',
                         style: TextStyle(
                             color: Theme.of(context)
                                 .primaryTextTheme
-                                .headline6
+                                .headline6!
                                 .color),
                       ),
                       backgroundColor: Theme.of(context).primaryColor,
@@ -67,7 +69,7 @@ class cartscreen extends StatelessWidget {
 class Orderbutton extends StatefulWidget {
   final cart cartt;
 
-  const Orderbutton({ @required this.cartt}) ;
+  const Orderbutton({ required this.cartt}) ;
 
   @override
   _OrderbuttonState createState() => _OrderbuttonState();
@@ -80,7 +82,7 @@ class _OrderbuttonState extends State<Orderbutton> {
   Widget build(BuildContext context) {
     return FlatButton(
       child: _isLoading ? CircularProgressIndicator() : Text('ORDER NOW'),
-      onPressed: (widget.cartt.totalamount <= 0 || _isLoading)
+      onPressed: (widget.cartt.totalAmount <= 0 || _isLoading)
           ? null
           : () async {
         setState(() {
@@ -88,7 +90,7 @@ class _OrderbuttonState extends State<Orderbutton> {
         });
 
         await Provider.of<order>(context, listen: false)
-            .addorder(widget.cartt.items.values.toList(), widget.cartt.totalamount);
+            .addOrder(widget.cartt.items.values.toList(), widget.cartt.totalAmount);
         setState(() {
           _isLoading = false;
         });

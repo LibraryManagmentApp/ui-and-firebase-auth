@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../provider/cart.dart';
+import '../../core/view_model/provider/cart.dart';
+
 
 class CartItem extends StatelessWidget {
-  final String id;
+  final String? id;
   final String productId;
-  final int price;
-  final int quantity;
-  final String title;
+  final int? price;
+  final int? quantity;
+  final String? title;
 
   const CartItem(
       this.id,
@@ -52,7 +53,7 @@ class CartItem extends StatelessWidget {
           );
         },
         onDismissed: (direction){
-          Provider.of<cart>(context,listen: false).removitem(productId);
+          Provider.of<cart>(context,listen: false).removItem(productId);
         },
         child: Card(
           margin: EdgeInsets.symmetric(horizontal: 15, vertical: 4),
@@ -67,8 +68,8 @@ class CartItem extends StatelessWidget {
                   ),
                 ),
               ),
-              title: Text(title),
-              subtitle: Text('Total \$${(price * quantity)}'),
+              title: Text(title!),
+              subtitle: Text('Total \$${(price! * quantity!)}'),
               trailing: Text('$quantity x'),
             ),
           ),

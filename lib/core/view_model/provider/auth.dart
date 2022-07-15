@@ -1,32 +1,32 @@
 import 'package:flutter/material.dart';
-import '../models/http_exception.dart';
 import'dart:convert';
 import'dart:async';
 import'package:shared_preferences/shared_preferences.dart';
 import'package:http/http.dart' as http;
+import '../../models/http_exception.dart';
 
 class Auth with ChangeNotifier{
-  String _token;
-  DateTime _expiryDate;
-  String  _userId;
-  Timer _authTimer;
+  String? _token;
+  DateTime? _expiryDate;
+  String?  _userId;
+  Timer? _authTimer;
 
   bool get isAuth{
     return token != null;
   }
 
-  String get token{
-    if(_expiryDate != null && _expiryDate.isAfter(DateTime.now()) && _token != null){
+  String? get token{
+    if(_expiryDate != null && _expiryDate!.isAfter(DateTime.now()) && _token != null){
       return _token;
     }
     return null;
   }
 
-  String get userId {
+  String? get userId {
     return _userId;
   }
 
-  Future<void> _authenticate(String email, String password, String urlSegment) async {
+  Future<void> _authenticate(String? email, String? password, String urlSegment) async {
     final url='https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyCBoD66znXkjBCNbeo4kskkLScd8xM19Ag';
 
     try{
@@ -58,11 +58,11 @@ class Auth with ChangeNotifier{
     }
   }
 
-  Future<void> signUp(String email, String password) async {
+  Future<void> signUp(String? email, String? password) async {
     return _authenticate(email,password,'signUp');
   }
 
-  Future<void> logIn(String email, String password) async {
+  Future<void> logIn(String? email, String? password) async {
     return _authenticate(email,password,'signInWithPassword');
   }
 
@@ -70,8 +70,8 @@ class Auth with ChangeNotifier{
     final prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey('userData')) return false;
 
-    final Map<String, Object> extractedData =
-    json.decode(prefs.getString('userData')as String) as Map<String, Object>;
+    final Map<String, dynamic> extractedData =
+    json.decode(prefs.getString('userData')as String) as Map<String, dynamic>;
 
     final expiryDate = DateTime.parse(extractedData['expiryDate'] as String) ;
     if (expiryDate.isBefore(DateTime.now())) return false;
@@ -90,7 +90,7 @@ class Auth with ChangeNotifier{
     _expiryDate=null;
 
     if(_authTimer != null){
-      _authTimer.cancel();
+      _authTimer!.cancel();
       _authTimer=null;
     }
     notifyListeners();
@@ -100,9 +100,9 @@ class Auth with ChangeNotifier{
 
   void _autologout(){
     if(_authTimer !=null){
-      _authTimer.cancel();
+      _authTimer!.cancel();
     }
-    final timeToExpiry=_expiryDate.difference(DateTime.now()).inSeconds;
+    final timeToExpiry=_expiryDate!.difference(DateTime.now()).inSeconds;
     _authTimer= Timer(Duration(seconds: timeToExpiry), logOut);
   }
 

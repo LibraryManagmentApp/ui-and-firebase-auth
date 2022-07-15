@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 class cartitem {
-  final String id;
-  final String product_name;
-  final int quantity;
-  final int price;
+  final String? id;
+  final String? product_name;
+  final int? quantity;
+  final int? price;
 
   cartitem({
-    @required this.id,
-    @required this.product_name,
-    @required this.quantity,
-    @required this.price,
+    required this.id,
+    required this.product_name,
+    required this.quantity,
+    required this.price,
   });
 }
 
@@ -26,21 +26,21 @@ class cart with ChangeNotifier {
     return _items.length;
   }
 
-  double get totalamount {
+  double get totalAmount {
     var total = 0.0;
-    _items.forEach((key, cartitemm) {
-      total += cartitemm.price * cartitemm.quantity;
+    _items.forEach((key, cartitem) {
+      total += cartitem.price! * cartitem.quantity!;
     });
     return total;
   }
 
-  void additem(String productid, double price, String title) {
+  void addItem(String productid, double price, String title) {
     if (_items.containsKey(productid)) {
       _items.update(productid, (exisitingcartitem) =>
           cartitem(
               id: exisitingcartitem.id,
               product_name: exisitingcartitem.product_name,
-              quantity: exisitingcartitem.quantity + 1,
+              quantity: exisitingcartitem.quantity! + 1,
               price: exisitingcartitem.price
           ),
       );
@@ -57,26 +57,27 @@ class cart with ChangeNotifier {
             ),
       );
     }
+    print('nnnn');
     notifyListeners();
   }
 
-  void removitem(String productid) {
+  void removItem(String productid) {
     _items.remove(productid);
     notifyListeners();
   }
 
-  void removesingleitem(String productid) {
+  void removeSingleItem(String productid) {
     if (!_items.containsKey(productid)) {
       return;
     }
-    if (_items[productid].quantity > 1) {
+    if (_items[productid]!.quantity! > 1) {
       _items.update(
         productid,
             (exisitingcartitem) =>
             cartitem(
                 id: exisitingcartitem.id,
                 product_name: exisitingcartitem.product_name,
-                quantity: exisitingcartitem.quantity - 1,
+                quantity: exisitingcartitem.quantity! - 1,
                 price: exisitingcartitem.price
             ),
       );
@@ -91,4 +92,3 @@ class cart with ChangeNotifier {
     notifyListeners();
   }
 }
-
